@@ -10,7 +10,6 @@ import java.util.UUID;
 @Entity
 public class FinishedMarketList {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String description;
