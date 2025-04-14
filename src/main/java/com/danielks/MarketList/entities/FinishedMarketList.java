@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Table(name = "tb_finished_lists")
 public class FinishedMarketList {
     @Id
     private UUID id;
