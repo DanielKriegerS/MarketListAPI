@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/finished-market-lists")
+@RequestMapping("/finished-market-lists")
 public class FinishedMarketListController {
 
     private final FinishedMarketListService service;
