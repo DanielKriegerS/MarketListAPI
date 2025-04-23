@@ -31,7 +31,6 @@ public class MarketListController {
 
     @PostMapping
     public ResponseEntity<MarketList> create(@RequestBody MarketList marketList) {
-        System.out.println("Recebido: " + marketList);
         try {
             MarketList saved = service.create(marketList);
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
