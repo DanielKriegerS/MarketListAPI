@@ -38,10 +38,6 @@ public class MarketList {
         this.totalValue = totalValue;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
     public List<MarketItem> getItems() {
         return items;
     }
