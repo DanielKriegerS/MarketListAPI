@@ -31,7 +31,14 @@ public class MarketListController {
 
     @PostMapping
     public ResponseEntity<MarketList> create(@RequestBody MarketList marketList) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(marketList));
+        System.out.println("Recebido: " + marketList);
+        try {
+            MarketList saved = service.create(marketList);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        } catch (Exception e) {
+            e.printStackTrace(); // Log no Railway
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PutMapping("/{id}")
