@@ -20,7 +20,7 @@ public class MarketList {
     @Convert(converter = MarketItemConverter.class)
     private List<MarketItem> items;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name="create_date", nullable = false, updatable = false)
     private LocalDateTime createDate;
 
     private String description;
