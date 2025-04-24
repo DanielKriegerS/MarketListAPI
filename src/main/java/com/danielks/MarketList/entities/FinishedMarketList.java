@@ -20,7 +20,7 @@ public class FinishedMarketList {
     @Convert(converter = MarketItemConverter.class)
     private List<MarketItem> items;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "finishDate", nullable = false)
     private LocalDateTime finishDate;
 
     private Float totalValue;
