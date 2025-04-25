@@ -35,24 +35,4 @@ public class FinishedMarketList {
         this.finishDate = finishDate == null ? LocalDateTime.now() : finishDate;
         this.totalValue = totalValue;
     }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public List<MarketItem> getItems() {
-        return items;
-    }
-
-    public LocalDateTime getFinishDate() {
-        return finishDate;
-    }
-
-    public Float getTotalValue() {
-        return totalValue;
-    }
 }
