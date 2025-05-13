@@ -5,6 +5,7 @@ import com.danielks.MarketList.services.MarketListService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.error.Mark;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,13 +30,18 @@ public class MarketListController {
         return list != null ? ResponseEntity.ok(list) : ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/finished-lists")
+    public ResponseEntity<List<MarketList>> getFinishedMarketLists() {
+        return ResponseEntity.ok(service.getFinishedMarketLists());
+    }
+
     @PostMapping
     public ResponseEntity<MarketList> create(@RequestBody MarketList marketList) {
         try {
             MarketList saved = service.create(marketList);
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (Exception e) {
-            e.printStackTrace(); // Log no Railway
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -50,5 +56,11 @@ public class MarketListController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<MarketList> finishList(@PathVariable UUID id) {
+        MarketList finishedList = service.finishList(id);
+        return ResponseEntity.ok(finishedList);
     }
 }

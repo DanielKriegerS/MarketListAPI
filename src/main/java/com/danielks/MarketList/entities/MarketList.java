@@ -20,22 +20,26 @@ public class MarketList {
     @Convert(converter = MarketItemConverter.class)
     private List<MarketItem> items;
 
-    @Column(name="create_date")
-    private LocalDateTime createDate;
+    private LocalDateTime date;
 
     private String description;
 
+    @Column(name = "total_value")
     private Float totalValue;
+
+    @Column(name = "is_finished")
+    private boolean isFinished;
 
     public MarketList() {
     }
 
-    public MarketList(UUID id, List<MarketItem> items, LocalDateTime createDate, String description, Float totalValue) {
+    public MarketList(UUID id, List<MarketItem> items, LocalDateTime date, String description, Float totalValue, boolean isFinished) {
         this.id = id;
         this.items = items;
-        this.createDate = createDate == null ? LocalDateTime.now() : createDate;
+        this.date = date == null ? LocalDateTime.now() : date;
         this.description = description;
         this.totalValue = totalValue;
+        this.isFinished = false;
     }
 
     public List<MarketItem> getItems() {
@@ -46,13 +50,16 @@ public class MarketList {
         return description;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
     public Float getTotalValue() {
         return totalValue;
     }
 
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public void finish() {
+        this.isFinished = true;
+    }
 
 }
