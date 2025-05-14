@@ -42,8 +42,16 @@ public class MarketList {
         this.isFinished = false;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
     public List<MarketItem> getItems() {
         return items;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
     }
 
     public String getDescription() {
