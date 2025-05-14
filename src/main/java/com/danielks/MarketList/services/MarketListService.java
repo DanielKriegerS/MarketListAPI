@@ -30,7 +30,7 @@ public class MarketListService {
         return repository.findByIsFinishedTrue();
     }
     public MarketList create(MarketList marketList) {
-        MarketList newList = new MarketList(null, marketList.getItems(), LocalDateTime.now(), marketList.getDescription(), marketList.getTotalValue(), marketList.isFinished());
+        MarketList newList = new MarketList(marketList.getId(), marketList.getItems(), marketList.getDate(), marketList.getDescription(), marketList.getTotalValue(), marketList.isFinished());
         return repository.save(newList);
     }
 
