@@ -1,7 +1,9 @@
 package com.danielks.MarketList.services;
 
 import com.danielks.MarketList.entities.MarketList;
+import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
 import com.danielks.MarketList.repositories.MarketListRepository;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,8 +24,9 @@ public class MarketListService {
         return repository.findAll();
     }
 
-    public MarketList getById(UUID id) {
-        return repository.findById(id).orElse(null);
+    public MarketList getById(UUID id)  {
+        return repository.findById(id).orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
+                                                                                    "id: " + id + " not found"));
     }
 
     public List<MarketList> getFinishedMarketLists() {
@@ -38,7 +41,8 @@ public class MarketListService {
         return repository.findById(id).map(existing -> {
             MarketList newList = this.create(updatedList);
             return repository.save(newList);
-        }).orElse(null);
+        }).orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
+                "id: " + id + " not found"));
     }
 
     public void delete(UUID id) {
@@ -47,7 +51,8 @@ public class MarketListService {
 
     public MarketList finishList(UUID id) {
         MarketList list = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lista não encontrada."));
+                .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
+                "id: " + id + " not found"));
         list.finish();
         repository.save(list);
         return list;
