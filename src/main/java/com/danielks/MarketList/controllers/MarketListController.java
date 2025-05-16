@@ -5,7 +5,6 @@ import com.danielks.MarketList.services.MarketListService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.error.Mark;
 
 import java.util.List;
 import java.util.UUID;

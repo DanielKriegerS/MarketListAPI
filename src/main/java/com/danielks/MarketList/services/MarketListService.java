@@ -3,12 +3,9 @@ package com.danielks.MarketList.services;
 import com.danielks.MarketList.entities.MarketList;
 import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
 import com.danielks.MarketList.repositories.MarketListRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
