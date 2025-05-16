@@ -27,7 +27,7 @@ public class MarketListController {
     @GetMapping("/{id}")
     public ResponseEntity<MarketList> getById(@PathVariable UUID id) {
         MarketList list = service.getById(id);
-        return list != null ? ResponseEntity.ok(list) : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(list) ;
     }
 
     @GetMapping("/finished-lists")
@@ -37,19 +37,14 @@ public class MarketListController {
 
     @PostMapping
     public ResponseEntity<MarketList> create(@RequestBody MarketList marketList) {
-        try {
-            MarketList saved = service.create(marketList);
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        MarketList saved = service.create(marketList);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<MarketList> update(@PathVariable UUID id, @RequestBody MarketList updatedList) {
         MarketList list = service.update(id, updatedList);
-        return list != null ? ResponseEntity.ok(list) : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(list);
     }
 
     @DeleteMapping("/{id}")
