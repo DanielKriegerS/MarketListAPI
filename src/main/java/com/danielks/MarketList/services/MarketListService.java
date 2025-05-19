@@ -18,7 +18,7 @@ public class MarketListService {
     }
 
     public List<MarketList> getAll() {
-        return repository.findAll();
+        return repository.findByIsFinishedFalse();
     }
 
     public MarketList getById(UUID id)  {
