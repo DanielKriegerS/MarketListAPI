@@ -1,6 +1,7 @@
 package com.danielks.MarketList.controllers;
 
 import com.danielks.MarketList.entities.MarketList;
+import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
 import com.danielks.MarketList.services.MarketListService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,8 @@ public class MarketListController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MarketList>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<ListSummaryDTO>> getOpenLists() {
+        return ResponseEntity.ok(service.getOpenLists());
     }
 
     @GetMapping("/{id}")
