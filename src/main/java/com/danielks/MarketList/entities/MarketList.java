@@ -39,7 +39,7 @@ public class MarketList {
         this.date = date == null ? LocalDateTime.now() : date;
         this.description = description;
         this.totalValue = totalValue;
-        this.isFinished = false;
+        this.isFinished = isFinished;
     }
 
     public UUID getId() {
