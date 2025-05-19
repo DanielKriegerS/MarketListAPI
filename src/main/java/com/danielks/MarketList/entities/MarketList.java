@@ -16,6 +16,7 @@ public class MarketList {
     private UUID id;
 
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(columnDefinition = "TEXT")
     @Convert(converter = MarketItemConverter.class)
     private List<MarketItem> items;
