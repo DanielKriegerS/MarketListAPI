@@ -1,6 +1,7 @@
 package com.danielks.MarketList.services;
 
 import com.danielks.MarketList.entities.MarketList;
+import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
 import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
 import com.danielks.MarketList.repositories.MarketListRepository;
 import org.springframework.http.HttpStatus;
@@ -17,8 +18,17 @@ public class MarketListService {
         this.repository = repository;
     }
 
-    public List<MarketList> getAll() {
-        return repository.findByIsFinishedFalse();
+    public List<ListSummaryDTO> getOpenLists() {
+        return repository.findByIsFinishedFalse()
+                .stream()
+                .map(list -> new ListSummaryDTO(
+                        list.getId(),
+                        list.getDate(),
+                        list.getDescription(),
+                        list.getTotalValue(),
+                        list.isFinished()
+                ))
+                .toList();
     }
 
     public MarketList getById(UUID id)  {
