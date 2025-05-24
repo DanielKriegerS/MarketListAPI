@@ -19,7 +19,7 @@ public class MarketListController {
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping("/open-lists")
     public ResponseEntity<List<ListSummaryDTO>> getOpenLists() {
         return ResponseEntity.ok(service.getOpenLists());
     }

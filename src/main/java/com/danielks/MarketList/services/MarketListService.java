@@ -26,6 +26,7 @@ public class MarketListService {
                         list.getDate(),
                         list.getDescription(),
                         list.getTotalValue(),
+                        list.getItems().size(),
                         list.isFinished()
                 ))
                 .toList();
