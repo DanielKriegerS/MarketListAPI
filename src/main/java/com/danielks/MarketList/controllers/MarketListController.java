@@ -31,7 +31,7 @@ public class MarketListController {
     }
 
     @GetMapping("/finished-lists")
-    public ResponseEntity<List<MarketList>> getFinishedMarketLists() {
+    public ResponseEntity<List<ListSummaryDTO>> getFinishedMarketLists() {
         return ResponseEntity.ok(service.getFinishedMarketLists());
     }
 

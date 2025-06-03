@@ -2,12 +2,14 @@ package com.danielks.MarketList.services;
 
 import com.danielks.MarketList.entities.MarketList;
 import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
+import com.danielks.MarketList.exceptions.market_list.ListInvalidException;
 import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
 import com.danielks.MarketList.repositories.MarketListRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,8 +39,18 @@ public class MarketListService {
                                                                                     "id: " + id + " not found"));
     }
 
-    public List<MarketList> getFinishedMarketLists() {
-        return repository.findByIsFinishedTrue();
+    public List<ListSummaryDTO> getFinishedMarketLists() {
+        return repository.findByIsFinishedTrue()
+                .stream()
+                .map(list -> new ListSummaryDTO(
+                        list.getId(),
+                        list.getDate(),
+                        list.getDescription(),
+                        list.getTotalValue(),
+                        list.getItems().size(),
+                        list.isFinished()
+                ))
+                .toList();
     }
     public MarketList create(MarketList marketList) {
         MarketList newList = new MarketList(marketList.getId(), marketList.getItems(), marketList.getDate(), marketList.getDescription(), marketList.getTotalValue(), marketList.isFinished());
@@ -46,11 +58,21 @@ public class MarketListService {
     }
 
     public MarketList update(UUID id, MarketList updatedList) {
-        return repository.findById(id).map(existing -> {
-            MarketList newList = this.create(updatedList);
-            return repository.save(newList);
-        }).orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
-                "id: " + id + " not found"));
+        Optional<MarketList> optionalList = repository.findById(id);
+
+        if(optionalList.isPresent()) {
+            MarketList existing = optionalList.get();
+
+            if (existing.validateList()) {
+                existing.updateList(updatedList);
+                return repository.save(existing);
+            } else {
+                throw new ListInvalidException(HttpStatus.BAD_REQUEST, " invalid list");
+            }
+        } else {
+            throw new ListNotFoundException(HttpStatus.NOT_FOUND,
+                    "id: " + id + " not found");
+        }
     }
 
     public void delete(UUID id) {
