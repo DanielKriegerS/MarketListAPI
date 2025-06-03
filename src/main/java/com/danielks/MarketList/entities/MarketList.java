@@ -71,4 +71,48 @@ public class MarketList {
         this.isFinished = true;
     }
 
+    public boolean validateList() {
+        if (!validateItems(this.items)) {
+            return false;
+        }
+
+        if (this.getDescription().isEmpty()) {
+            return false;
+        }
+
+        if (this.totalValue < 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validateItems(List<MarketItem> items) {
+        for (MarketItem item : items) {
+            if(item.name().isEmpty()) {
+                return false;
+            }
+
+            if(item.price() < 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void updateList(MarketList listToUpdate) {
+        if (!listToUpdate.getDescription().isEmpty()){
+            this.description = listToUpdate.getDescription();
+        }
+
+        if (!listToUpdate.getItems().isEmpty()) {
+            this.items = listToUpdate.getItems();
+        }
+
+        if (!listToUpdate.getTotalValue().equals(this.totalValue)) {
+            this.totalValue = listToUpdate.getTotalValue();
+        }
+    }
+
 }
