@@ -5,6 +5,7 @@ import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
 import com.danielks.MarketList.exceptions.market_list.ListInvalidException;
 import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
 import com.danielks.MarketList.repositories.MarketListRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class MarketListService {
         this.repository = repository;
     }
 
+    @Transactional
     public List<ListSummaryDTO> getOpenLists() {
         return repository.findByIsFinishedFalse()
                 .stream()
@@ -39,6 +41,7 @@ public class MarketListService {
                                                                                     "id: " + id + " not found"));
     }
 
+    @Transactional
     public List<ListSummaryDTO> getFinishedMarketLists() {
         return repository.findByIsFinishedTrue()
                 .stream()
