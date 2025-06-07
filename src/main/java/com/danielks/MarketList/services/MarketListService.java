@@ -85,7 +85,9 @@ public class MarketListService {
     }
 
     public void delete(UUID id) {
-        repository.deleteById(id);
+         repository.findById(id).orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
+                                                                                "id: " + id + " not found"));
+         repository.deleteById(id);
     }
 
     public MarketList finishList(UUID id) {
