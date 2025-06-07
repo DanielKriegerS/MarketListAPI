@@ -55,7 +55,12 @@ public class MarketListService {
                 ))
                 .toList();
     }
+
     public MarketList create(MarketList marketList) {
+        boolean validToCreate = marketList.partialValidateList();
+        if(!validToCreate) {
+            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " list invalid to create");
+        }
         MarketList newList = new MarketList(marketList.getId(), marketList.getItems(), marketList.getDate(), marketList.getDescription(), marketList.getTotalValue(), marketList.isFinished());
         return repository.save(newList);
     }
@@ -66,11 +71,12 @@ public class MarketListService {
         if(optionalList.isPresent()) {
             MarketList existing = optionalList.get();
 
-            if (existing.validateList()) {
+            boolean validToUpdate = existing.validateList();
+            if (validToUpdate) {
                 existing.updateList(updatedList);
                 return repository.save(existing);
             } else {
-                throw new ListInvalidException(HttpStatus.BAD_REQUEST, " invalid list");
+                throw new ListInvalidException(HttpStatus.BAD_REQUEST, " list invalid to update");
             }
         } else {
             throw new ListNotFoundException(HttpStatus.NOT_FOUND,
