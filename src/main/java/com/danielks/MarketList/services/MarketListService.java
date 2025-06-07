@@ -21,6 +21,11 @@ public class MarketListService {
         this.repository = repository;
     }
 
+    public MarketList getById(UUID id)  {
+        return repository.findById(id).orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
+                "id: " + id + " not found"));
+    }
+
     @Transactional
     public List<ListSummaryDTO> getOpenLists() {
         return repository.findByIsFinishedFalse()
@@ -34,11 +39,6 @@ public class MarketListService {
                         list.isFinished()
                 ))
                 .toList();
-    }
-
-    public MarketList getById(UUID id)  {
-        return repository.findById(id).orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
-                                                                                    "id: " + id + " not found"));
     }
 
     @Transactional
