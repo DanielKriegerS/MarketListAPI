@@ -71,12 +71,25 @@ public class MarketList {
         this.isFinished = true;
     }
 
-    public boolean validateList() {
-        if (!validateItems(this.items)) {
+    public boolean partialValidateList() {
+        boolean isEmptyDescription = this.validateDescription();
+        boolean validItems = this.validateItems();
+
+        if (isEmptyDescription) {
             return false;
         }
 
-        if (this.getDescription().isEmpty()) {
+        if (!validItems) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean validateList() {
+        boolean partialValidated = this.partialValidateList();
+
+        if (!partialValidated) {
             return false;
         }
 
@@ -87,9 +100,13 @@ public class MarketList {
         return true;
     }
 
-    private boolean validateItems(List<MarketItem> items) {
-        for (MarketItem item : items) {
+    private boolean validateItems() {
+        for (MarketItem item : this.items) {
             if(item.name().isEmpty()) {
+                return false;
+            }
+
+            if(item.quantity() < 0) {
                 return false;
             }
 
@@ -99,6 +116,10 @@ public class MarketList {
         }
 
         return true;
+    }
+
+    public boolean validateDescription() {
+        return this.description.trim().isEmpty();
     }
 
     public void updateList(MarketList listToUpdate) {
