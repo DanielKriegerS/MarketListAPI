@@ -68,20 +68,20 @@ public class MarketListService {
     public MarketList update(UUID id, MarketList updatedList) {
         Optional<MarketList> optionalList = repository.findById(id);
 
-        if(optionalList.isPresent()) {
-            MarketList existing = optionalList.get();
-
-            boolean validToUpdate = existing.validateList();
-            if (validToUpdate) {
-                existing.updateList(updatedList);
-                return repository.save(existing);
-            } else {
-                throw new ListInvalidException(HttpStatus.BAD_REQUEST, " list invalid to update");
-            }
-        } else {
+        if(optionalList.isEmpty()) {
             throw new ListNotFoundException(HttpStatus.NOT_FOUND,
                     "id: " + id + " not found");
         }
+
+        MarketList existing = optionalList.get();
+        boolean validToUpdate = existing.validateList();
+
+        if (!validToUpdate) {
+            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " list invalid to update");
+        }
+
+        existing.updateList(updatedList);
+        return repository.save(existing);
     }
 
     public void delete(UUID id) {
