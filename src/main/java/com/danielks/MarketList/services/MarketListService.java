@@ -1,7 +1,9 @@
 package com.danielks.MarketList.services;
 
 import com.danielks.MarketList.entities.MarketList;
+import com.danielks.MarketList.entities.dtos.CompleteListDTO;
 import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
+import com.danielks.MarketList.entities.mappers.MarketListMapper;
 import com.danielks.MarketList.exceptions.market_list.ListInvalidException;
 import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
 import com.danielks.MarketList.repositories.MarketListRepository;
@@ -16,44 +18,29 @@ import java.util.UUID;
 @Service
 public class MarketListService {
     private final MarketListRepository repository;
+    private final MarketListMapper mapper;
 
-    public MarketListService(MarketListRepository repository) {
+    public MarketListService(MarketListRepository repository, MarketListMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
-    public MarketList getById(UUID id)  {
-        return repository.findById(id).orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
+    public CompleteListDTO getById(UUID id)  {
+        MarketList list = repository.findById(id).orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
                 "id: " + id + " not found"));
+        return mapper.toDTO(list);
     }
 
     @Transactional
     public List<ListSummaryDTO> getOpenLists() {
-        return repository.findByIsFinishedFalse()
-                .stream()
-                .map(list -> new ListSummaryDTO(
-                        list.getId(),
-                        list.getDate(),
-                        list.getDescription(),
-                        list.getTotalValue(),
-                        list.getItems().size(),
-                        list.isFinished()
-                ))
-                .toList();
+        List<MarketList> openLists = repository.findByFinishedFalse();
+        return mapper.toSummaryList(openLists);
     }
 
     @Transactional
-    public List<ListSummaryDTO> getFinishedMarketLists() {
-        return repository.findByIsFinishedTrue()
-                .stream()
-                .map(list -> new ListSummaryDTO(
-                        list.getId(),
-                        list.getDate(),
-                        list.getDescription(),
-                        list.getTotalValue(),
-                        list.getItems().size(),
-                        list.isFinished()
-                ))
-                .toList();
+    public List<ListSummaryDTO> getFinishedLists() {
+        List<MarketList> finishedLists = repository.findByFinishedTrue();
+        return mapper.toSummaryList(finishedLists);
     }
 
     public MarketList create(MarketList marketList) {
