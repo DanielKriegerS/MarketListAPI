@@ -1,6 +1,7 @@
 package com.danielks.MarketList.controllers;
 
 import com.danielks.MarketList.entities.MarketList;
+import com.danielks.MarketList.entities.dtos.CompleteListDTO;
 import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
 import com.danielks.MarketList.services.MarketListService;
 import org.springframework.http.HttpStatus;
@@ -24,15 +25,15 @@ public class MarketListController {
         return ResponseEntity.ok(service.getOpenLists());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MarketList> getById(@PathVariable UUID id) {
-        MarketList list = service.getById(id);
-        return ResponseEntity.ok(list) ;
-    }
-
     @GetMapping("/finished-lists")
     public ResponseEntity<List<ListSummaryDTO>> getFinishedMarketLists() {
-        return ResponseEntity.ok(service.getFinishedMarketLists());
+        return ResponseEntity.ok(service.getFinishedLists());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CompleteListDTO> getById(@PathVariable UUID id) {
+        CompleteListDTO list = service.getById(id);
+        return ResponseEntity.ok(list) ;
     }
 
     @PostMapping
