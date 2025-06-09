@@ -3,6 +3,7 @@ package com.danielks.MarketList.controllers;
 import com.danielks.MarketList.entities.MarketList;
 import com.danielks.MarketList.entities.dtos.CompleteListDTO;
 import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
+import com.danielks.MarketList.entities.mappers.MarketListMapper;
 import com.danielks.MarketList.services.MarketListService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,14 +38,14 @@ public class MarketListController {
     }
 
     @PostMapping
-    public ResponseEntity<MarketList> create(@RequestBody MarketList marketList) {
-        MarketList saved = service.create(marketList);
+    public ResponseEntity<CompleteListDTO> create(@RequestBody MarketList marketList) {
+        CompleteListDTO saved = service.create(marketList);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MarketList> update(@PathVariable UUID id, @RequestBody MarketList updatedList) {
-        MarketList list = service.update(id, updatedList);
+    public ResponseEntity<CompleteListDTO> update(@PathVariable UUID id, @RequestBody MarketList updatedList) {
+        CompleteListDTO list = service.update(id, updatedList);
         return ResponseEntity.ok(list);
     }
 
