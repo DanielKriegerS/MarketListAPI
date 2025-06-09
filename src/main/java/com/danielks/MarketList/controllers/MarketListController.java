@@ -2,6 +2,7 @@ package com.danielks.MarketList.controllers;
 
 import com.danielks.MarketList.entities.MarketList;
 import com.danielks.MarketList.entities.dtos.CompleteListDTO;
+import com.danielks.MarketList.entities.dtos.FinishedListDTO;
 import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
 import com.danielks.MarketList.entities.mappers.MarketListMapper;
 import com.danielks.MarketList.services.MarketListService;
@@ -56,8 +57,8 @@ public class MarketListController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<MarketList> finishList(@PathVariable UUID id) {
-        MarketList finishedList = service.finishList(id);
+    public ResponseEntity<FinishedListDTO> finishList(@PathVariable UUID id) {
+        FinishedListDTO finishedList = service.finishList(id);
         return ResponseEntity.ok(finishedList);
     }
 }

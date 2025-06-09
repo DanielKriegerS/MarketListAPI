@@ -2,6 +2,7 @@ package com.danielks.MarketList.services;
 
 import com.danielks.MarketList.entities.MarketList;
 import com.danielks.MarketList.entities.dtos.CompleteListDTO;
+import com.danielks.MarketList.entities.dtos.FinishedListDTO;
 import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
 import com.danielks.MarketList.entities.mappers.MarketListMapper;
 import com.danielks.MarketList.exceptions.market_list.ListInvalidException;
@@ -26,8 +27,9 @@ public class MarketListService {
     }
 
     public CompleteListDTO getById(UUID id)  {
-        MarketList list = repository.findById(id).orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
-                "id: " + id + " not found"));
+        MarketList list = repository.findById(id)
+                    .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
+                                                                            "id: " + id + " not found"));
         return mapper.toDTO(list);
     }
 
@@ -73,17 +75,18 @@ public class MarketListService {
     }
 
     public void delete(UUID id) {
-         repository.findById(id).orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
+         repository.findById(id).
+                 orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
                                                                                 "id: " + id + " not found"));
          repository.deleteById(id);
     }
 
-    public MarketList finishList(UUID id) {
+    public FinishedListDTO finishList(UUID id) {
         MarketList list = repository.findById(id)
                 .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
-                "id: " + id + " not found"));
+                                                                                "id: " + id + " not found"));
         list.finish();
         repository.save(list);
-        return list;
+        return new FinishedListDTO("OK");
     }
 }
