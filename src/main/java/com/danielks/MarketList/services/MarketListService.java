@@ -43,16 +43,16 @@ public class MarketListService {
         return mapper.toSummaryList(finishedLists);
     }
 
-    public MarketList create(MarketList marketList) {
+    public CompleteListDTO create(MarketList marketList) {
         boolean validToCreate = marketList.partialValidateList();
         if(!validToCreate) {
             throw new ListInvalidException(HttpStatus.BAD_REQUEST, " list invalid to create");
         }
-        MarketList newList = new MarketList(marketList.getId(), marketList.getItems(), marketList.getDate(), marketList.getDescription(), marketList.getTotalValue(), marketList.isFinished());
-        return repository.save(newList);
+        repository.save(marketList);
+        return mapper.toDTO(marketList);
     }
 
-    public MarketList update(UUID id, MarketList updatedList) {
+    public CompleteListDTO update(UUID id, MarketList updatedList) {
         Optional<MarketList> optionalList = repository.findById(id);
 
         if(optionalList.isEmpty()) {
@@ -68,7 +68,8 @@ public class MarketListService {
         }
 
         existing.updateList(updatedList);
-        return repository.save(existing);
+        repository.save(existing);
+        return mapper.toDTO(existing);
     }
 
     public void delete(UUID id) {
