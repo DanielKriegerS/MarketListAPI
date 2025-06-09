@@ -29,18 +29,18 @@ public class MarketList {
     private Float totalValue;
 
     @Column(name = "is_finished")
-    private boolean isFinished;
+    private boolean finished;
 
     public MarketList() {
     }
 
-    public MarketList(UUID id, List<MarketItem> items, LocalDateTime date, String description, Float totalValue, boolean isFinished) {
+    public MarketList(UUID id, List<MarketItem> items, LocalDateTime date, String description, Float totalValue, boolean finished) {
         this.id = id;
         this.items = items;
         this.date = date == null ? LocalDateTime.now() : date;
         this.description = description;
         this.totalValue = totalValue;
-        this.isFinished = isFinished;
+        this.finished = finished;
     }
 
     public UUID getId() {
@@ -64,11 +64,27 @@ public class MarketList {
     }
 
     public boolean isFinished() {
-        return isFinished;
+        return finished;
     }
 
     public void finish() {
-        this.isFinished = true;
+        this.finished = true;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setTotalValue(Float totalValue) {
+        this.totalValue = totalValue;
     }
 
     public boolean partialValidateList() {
