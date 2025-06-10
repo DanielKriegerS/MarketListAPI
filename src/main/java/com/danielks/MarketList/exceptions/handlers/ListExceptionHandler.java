@@ -3,6 +3,7 @@ package com.danielks.MarketList.exceptions.handlers;
 import com.danielks.MarketList.controllers.MarketListController;
 import com.danielks.MarketList.entities.ErrorResponse;
 import com.danielks.MarketList.entities.mappers.ErrorResponseMapper;
+import com.danielks.MarketList.exceptions.market_list.ListFinishedException;
 import com.danielks.MarketList.exceptions.market_list.ListInvalidException;
 import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,12 @@ public class ListExceptionHandler {
 
     @ExceptionHandler(ListInvalidException.class)
     public ResponseEntity<ErrorResponse> handleListInvalid(ListInvalidException ex) {
+        ErrorResponse error = errorResponseMapper.toErrorResponse(HttpStatus.BAD_REQUEST, ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(ListFinishedException.class)
+    public ResponseEntity<ErrorResponse> handleListFinished(ListFinishedException ex) {
         ErrorResponse error = errorResponseMapper.toErrorResponse(HttpStatus.BAD_REQUEST, ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
