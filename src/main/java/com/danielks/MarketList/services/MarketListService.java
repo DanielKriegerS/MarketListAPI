@@ -5,6 +5,7 @@ import com.danielks.MarketList.entities.dtos.CompleteListDTO;
 import com.danielks.MarketList.entities.dtos.FinishedListDTO;
 import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
 import com.danielks.MarketList.entities.mappers.MarketListMapper;
+import com.danielks.MarketList.exceptions.market_list.ListFinishedException;
 import com.danielks.MarketList.exceptions.market_list.ListInvalidException;
 import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
 import com.danielks.MarketList.repositories.MarketListRepository;
@@ -47,6 +48,7 @@ public class MarketListService {
 
     public CompleteListDTO create(MarketList marketList) {
         boolean validToCreate = marketList.partialValidateList();
+
         if(!validToCreate) {
             throw new ListInvalidException(HttpStatus.BAD_REQUEST, " list invalid to create");
         }
@@ -63,6 +65,7 @@ public class MarketListService {
         }
 
         MarketList existing = optionalList.get();
+        verifyFinished(existing);
         boolean validToUpdate = existing.validateList();
 
         if (!validToUpdate) {
@@ -85,8 +88,17 @@ public class MarketListService {
         MarketList list = repository.findById(id)
                 .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
                                                                                 "id: " + id + " not found"));
+        verifyFinished(list);
         list.finish();
         repository.save(list);
         return new FinishedListDTO("OK");
+    }
+
+    private void verifyFinished(MarketList marketList) {
+        boolean isFinished = marketList.isFinished();
+        if (isFinished) {
+            throw new ListFinishedException(HttpStatus.BAD_REQUEST,
+                                                                            "the required list is finished!");
+        }
     }
 }
