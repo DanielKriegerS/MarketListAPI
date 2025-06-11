@@ -57,24 +57,18 @@ public class MarketListService {
     }
 
     public CompleteListDTO update(UUID id, MarketList updatedList) {
-        Optional<MarketList> optionalList = repository.findById(id);
-
-        if(optionalList.isEmpty()) {
-            throw new ListNotFoundException(HttpStatus.NOT_FOUND,
-                    "id: " + id + " not found");
-        }
-
-        MarketList existing = optionalList.get();
-        verifyFinished(existing);
+        MarketList list = repository.findById(id)
+                    .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
+                                                                            "id: " + id + " not found"));
 
         boolean validToUpdate = updatedList.validateList();
         if (!validToUpdate) {
             throw new ListInvalidException(HttpStatus.BAD_REQUEST, " list invalid to update");
         }
 
-        existing.updateList(updatedList);
-        repository.save(existing);
-        return mapper.toDTO(existing);
+        list.updateList(updatedList);
+        repository.save(list);
+        return mapper.toDTO(list);
     }
 
     public void delete(UUID id) {
@@ -88,17 +82,10 @@ public class MarketListService {
         MarketList list = repository.findById(id)
                 .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
                                                                                 "id: " + id + " not found"));
-        verifyFinished(list);
+
         list.finish();
         repository.save(list);
         return new FinishedListDTO("OK");
     }
 
-    private void verifyFinished(MarketList marketList) {
-        boolean isFinished = marketList.isFinished();
-        if (isFinished) {
-            throw new ListFinishedException(HttpStatus.BAD_REQUEST,
-                                                                            "the required list is finished!");
-        }
-    }
 }
