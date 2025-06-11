@@ -122,11 +122,11 @@ public class MarketList {
                 return false;
             }
 
-            if(item.quantity() < 0) {
+            if(item.quantity() <= 0) {
                 return false;
             }
 
-            if(item.price() < 0) {
+            if(item.price() <= 0) {
                 return false;
             }
         }
@@ -151,5 +151,4 @@ public class MarketList {
             this.totalValue = listToUpdate.getTotalValue();
         }
     }
-
 }
