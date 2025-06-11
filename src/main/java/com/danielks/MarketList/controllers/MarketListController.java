@@ -6,6 +6,8 @@ import com.danielks.MarketList.entities.dtos.FinishedListDTO;
 import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
 import com.danielks.MarketList.entities.mappers.MarketListMapper;
 import com.danielks.MarketList.services.MarketListService;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,18 +15,31 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping("/market-lists")
 public class MarketListController {
     private final MarketListService service;
+    private final MarketListMapper mapper;
 
-    public MarketListController(MarketListService service) {
+    public MarketListController(MarketListService service, MarketListMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @GetMapping("/open-lists")
-    public ResponseEntity<List<ListSummaryDTO>> getOpenLists() {
-        return ResponseEntity.ok(service.getOpenLists());
+    public ResponseEntity<CollectionModel<EntityModel<ListSummaryDTO>>> getOpenLists() {
+        List<ListSummaryDTO> openLists = service.getOpenLists();
+
+        List<EntityModel<ListSummaryDTO>> listModels = openLists.stream()
+                .map(EntityModel::of).toList();
+
+        CollectionModel<EntityModel<ListSummaryDTO>> collectionModel = CollectionModel.of(listModels,
+                linkTo(methodOn(MarketListController.class).getOpenLists()).withSelfRel());
+
+        return ResponseEntity.ok(collectionModel);
     }
 
     @GetMapping("/finished-lists")
