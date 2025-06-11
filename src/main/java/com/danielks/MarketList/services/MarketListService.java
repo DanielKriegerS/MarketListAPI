@@ -47,11 +47,7 @@ public class MarketListService {
     }
 
     public CompleteListDTO create(MarketList marketList) {
-        boolean validToCreate = marketList.partialValidateList();
-
-        if(!validToCreate) {
-            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " list invalid to create");
-        }
+        marketList.partialValidateList();
         repository.save(marketList);
         return mapper.toDTO(marketList);
     }
@@ -61,11 +57,7 @@ public class MarketListService {
                     .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
                                                                             "id: " + id + " not found"));
 
-        boolean validToUpdate = updatedList.validateList();
-        if (!validToUpdate) {
-            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " list invalid to update");
-        }
-
+        updatedList.validateList();
         list.updateList(updatedList);
         repository.save(list);
         return mapper.toDTO(list);
