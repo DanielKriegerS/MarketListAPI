@@ -66,8 +66,8 @@ public class MarketListService {
 
         MarketList existing = optionalList.get();
         verifyFinished(existing);
-        boolean validToUpdate = existing.validateList();
 
+        boolean validToUpdate = updatedList.validateList();
         if (!validToUpdate) {
             throw new ListInvalidException(HttpStatus.BAD_REQUEST, " list invalid to update");
         }
