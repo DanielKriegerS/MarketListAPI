@@ -1,7 +1,10 @@
 package com.danielks.MarketList.entities;
 
+import com.danielks.MarketList.exceptions.market_list.ListFinishedException;
 import com.danielks.MarketList.utils.MarketItemConverter;
 import jakarta.persistence.*;
+import org.springframework.http.HttpStatus;
+
 import java.time.LocalDateTime;
 
 import java.util.List;
@@ -109,6 +112,8 @@ public class MarketList {
             return false;
         }
 
+        verifyFinished();
+
         if (this.totalValue < 0) {
             return false;
         }
@@ -149,6 +154,13 @@ public class MarketList {
 
         if (!listToUpdate.getTotalValue().equals(this.totalValue)) {
             this.totalValue = listToUpdate.getTotalValue();
+        }
+    }
+
+    private void verifyFinished() {
+        if (finished) {
+            throw new ListFinishedException(HttpStatus.BAD_REQUEST,
+                                                        "the required list is finished!");
         }
     }
 }
