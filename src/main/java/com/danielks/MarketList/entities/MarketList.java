@@ -1,6 +1,7 @@
 package com.danielks.MarketList.entities;
 
 import com.danielks.MarketList.exceptions.market_list.ListFinishedException;
+import com.danielks.MarketList.exceptions.market_list.ListInvalidException;
 import com.danielks.MarketList.utils.MarketItemConverter;
 import jakarta.persistence.*;
 import org.springframework.http.HttpStatus;
@@ -90,70 +91,53 @@ public class MarketList {
         this.totalValue = totalValue;
     }
 
-    public boolean partialValidateList() {
-        boolean isEmptyDescription = this.validateDescription();
-        boolean validItems = this.validateItems();
-
-        if (isEmptyDescription) {
-            return false;
-        }
-
-        if (!validItems) {
-            return false;
-        }
-
-        return true;
+    public void partialValidateList() {
+        validateDescription();
+        validateItems();
     }
 
-    public boolean validateList() {
-        boolean partialValidated = this.partialValidateList();
-
-        if (!partialValidated) {
-            return false;
-        }
-
+    public void validateList() {
+        partialValidateList();
         verifyFinished();
 
-        if (this.totalValue < 0) {
-            return false;
+        if (totalValue < 0) {
+            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " negative list total value");
         }
-
-        return true;
     }
 
-    private boolean validateItems() {
-        for (MarketItem item : this.items) {
+    private void validateItems() {
+        for (MarketItem item : items) {
             if(item.name().isEmpty()) {
-                return false;
+                throw new ListInvalidException(HttpStatus.BAD_REQUEST, " item name empty");
             }
 
             if(item.quantity() <= 0) {
-                return false;
+                throw new ListInvalidException(HttpStatus.BAD_REQUEST, " negative quantity");
             }
 
             if(item.price() <= 0) {
-                return false;
+                throw new ListInvalidException(HttpStatus.BAD_REQUEST, " negative item price");
             }
         }
-
-        return true;
     }
 
-    public boolean validateDescription() {
-        return this.description.trim().isEmpty();
+    private void validateDescription() {
+        if (description.trim().isEmpty()){
+            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " description invalid");
+        }
     }
 
     public void updateList(MarketList listToUpdate) {
         if (!listToUpdate.getDescription().isEmpty()){
-            this.description = listToUpdate.getDescription();
+            description = listToUpdate.getDescription();
         }
 
         if (!listToUpdate.getItems().isEmpty()) {
-            this.items = listToUpdate.getItems();
+            items = listToUpdate.getItems();
         }
 
-        if (!listToUpdate.getTotalValue().equals(this.totalValue)) {
-            this.totalValue = listToUpdate.getTotalValue();
+        if (!listToUpdate.getTotalValue().equals(totalValue)) {
+            totalValue = listToUpdate.getTotalValue();
         }
     }
 

@@ -5,8 +5,6 @@ import com.danielks.MarketList.entities.dtos.CompleteListDTO;
 import com.danielks.MarketList.entities.dtos.FinishedListDTO;
 import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
 import com.danielks.MarketList.entities.mappers.MarketListMapper;
-import com.danielks.MarketList.exceptions.market_list.ListFinishedException;
-import com.danielks.MarketList.exceptions.market_list.ListInvalidException;
 import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
 import com.danielks.MarketList.repositories.MarketListRepository;
 import jakarta.transaction.Transactional;
@@ -14,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
