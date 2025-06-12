@@ -36,14 +36,23 @@ public class MarketListController {
 
         CollectionModel<EntityModel<ListSummaryDTO>> collectionModel = CollectionModel.of(listModels,
                 linkTo(methodOn(MarketListController.class).getOpenLists()).withSelfRel());
-        collectionModel.add(linkTo(methodOn(MarketListController.class).getFinishedMarketLists()).withRel("Finished Lists"));
+        collectionModel.add(linkTo(methodOn(MarketListController.class).getFinishedLists()).withRel("Finished Lists"));
 
         return ResponseEntity.ok(collectionModel);
     }
 
     @GetMapping("/finished-lists")
-    public ResponseEntity<List<ListSummaryDTO>> getFinishedMarketLists() {
-        return ResponseEntity.ok(service.getFinishedLists());
+    public ResponseEntity<CollectionModel<EntityModel<ListSummaryDTO>>> getFinishedLists() {
+        List<ListSummaryDTO> finishedLists = service.getFinishedLists();
+
+        List<EntityModel<ListSummaryDTO>> listModels = finishedLists.stream()
+                .map(EntityModel::of).toList();
+
+        CollectionModel<EntityModel<ListSummaryDTO>> collectionModel = CollectionModel.of(listModels,
+                linkTo(methodOn(MarketListController.class).getFinishedLists()).withSelfRel());
+        collectionModel.add(linkTo(methodOn(MarketListController.class).getOpenLists()).withRel("Open Lists"));
+
+        return ResponseEntity.ok(collectionModel);
     }
 
     @GetMapping("/{id}")
