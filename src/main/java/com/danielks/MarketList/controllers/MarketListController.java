@@ -35,8 +35,8 @@ public class MarketListController {
                 .map(EntityModel::of).toList();
 
         CollectionModel<EntityModel<ListSummaryDTO>> collectionModel = CollectionModel.of(listModels,
-                linkTo(methodOn(MarketListController.class).getOpenLists()).withSelfRel());
-        collectionModel.add(linkTo(methodOn(MarketListController.class).getFinishedLists()).withRel("Finished Lists"));
+                linkTo(methodOn(MarketListController.class).getOpenLists()).withSelfRel(),
+                linkTo(methodOn(MarketListController.class).getFinishedLists()).withRel("Finished Lists"));
 
         return ResponseEntity.ok(collectionModel);
     }
@@ -49,8 +49,8 @@ public class MarketListController {
                 .map(EntityModel::of).toList();
 
         CollectionModel<EntityModel<ListSummaryDTO>> collectionModel = CollectionModel.of(listModels,
-                linkTo(methodOn(MarketListController.class).getFinishedLists()).withSelfRel());
-        collectionModel.add(linkTo(methodOn(MarketListController.class).getOpenLists()).withRel("Open Lists"));
+                linkTo(methodOn(MarketListController.class).getFinishedLists()).withSelfRel(),
+                linkTo(methodOn(MarketListController.class).getOpenLists()).withRel("Open Lists"));
 
         return ResponseEntity.ok(collectionModel);
     }
