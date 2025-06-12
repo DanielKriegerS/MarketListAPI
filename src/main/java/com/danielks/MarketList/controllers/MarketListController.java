@@ -22,11 +22,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/market-lists")
 public class MarketListController {
     private final MarketListService service;
-    private final MarketListMapper mapper;
 
-    public MarketListController(MarketListService service, MarketListMapper mapper) {
+    public MarketListController(MarketListService service) {
         this.service = service;
-        this.mapper = mapper;
     }
 
     @GetMapping("/open-lists")
