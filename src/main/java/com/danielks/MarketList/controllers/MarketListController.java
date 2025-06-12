@@ -36,6 +36,7 @@ public class MarketListController {
 
         CollectionModel<EntityModel<ListSummaryDTO>> collectionModel = CollectionModel.of(listModels,
                 linkTo(methodOn(MarketListController.class).getOpenLists()).withSelfRel());
+        collectionModel.add(linkTo(methodOn(MarketListController.class).getFinishedMarketLists()).withRel("Finished Lists"));
 
         return ResponseEntity.ok(collectionModel);
     }
