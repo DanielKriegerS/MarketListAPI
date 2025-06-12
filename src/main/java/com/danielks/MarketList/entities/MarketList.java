@@ -72,6 +72,7 @@ public class MarketList {
     }
 
     public void finish() {
+        validateList();
         this.finished = true;
     }
 
@@ -91,6 +92,9 @@ public class MarketList {
         this.totalValue = totalValue;
     }
 
+    public void verifyToCreate() {
+        partialValidateList();
+    }
     public void partialValidateList() {
         validateDescription();
         validateItems();
@@ -128,6 +132,8 @@ public class MarketList {
     }
 
     public void updateList(MarketList listToUpdate) {
+        listToUpdate.validateList();
+
         if (!listToUpdate.getDescription().isEmpty()){
             description = listToUpdate.getDescription();
         }

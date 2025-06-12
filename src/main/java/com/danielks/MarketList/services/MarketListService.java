@@ -44,7 +44,7 @@ public class MarketListService {
     }
 
     public CompleteListDTO create(MarketList marketList) {
-        marketList.partialValidateList();
+        marketList.verifyToCreate();
         repository.save(marketList);
         return mapper.toDTO(marketList);
     }
@@ -54,7 +54,6 @@ public class MarketListService {
                     .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
                                                                             "id: " + id + " not found"));
 
-        updatedList.validateList();
         list.updateList(updatedList);
         repository.save(list);
         return mapper.toDTO(list);
