@@ -56,9 +56,15 @@ public class MarketListController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CompleteListDTO> getById(@PathVariable UUID id) {
+    public ResponseEntity<EntityModel<CompleteListDTO>> getById(@PathVariable UUID id) {
         CompleteListDTO list = service.getById(id);
-        return ResponseEntity.ok(list) ;
+
+        EntityModel<CompleteListDTO> model = EntityModel.of(list,
+                linkTo(methodOn(MarketListController.class).getById(id)).withSelfRel(),
+                linkTo(methodOn(MarketListController.class).getOpenLists()).withRel("Open Lists"),
+                linkTo(methodOn(MarketListController.class).getFinishedLists()).withRel("Finished Lists")
+        );
+        return ResponseEntity.ok(model) ;
     }
 
     @PostMapping
