@@ -4,11 +4,9 @@ import com.danielks.MarketList.entities.MarketList;
 import com.danielks.MarketList.entities.dtos.CompleteListDTO;
 import com.danielks.MarketList.entities.dtos.FinishedListDTO;
 import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
-import com.danielks.MarketList.entities.mappers.MarketListMapper;
 import com.danielks.MarketList.services.MarketListService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
