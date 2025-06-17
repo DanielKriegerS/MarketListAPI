@@ -72,7 +72,8 @@ public class MarketList {
     }
 
     public void finish() {
-        validateList();
+        char context = 'F';
+        validateList(context);
         this.finished = true;
     }
 
@@ -92,24 +93,17 @@ public class MarketList {
         this.totalValue = totalValue;
     }
 
+    // context 'C' = create; 'U'= update; 'F' finish
     public void verifyToCreate() {
-        partialValidateList();
+        char context = 'C';
+        partialValidateList(context);
     }
-    public void partialValidateList() {
+    public void partialValidateList(char context) {
         validateDescription();
-        validateItems();
+        validateItems(context);
     }
 
-    public void validateList() {
-        partialValidateList();
-        verifyFinished();
-
-        if (totalValue < 0) {
-            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " negative list total value");
-        }
-    }
-
-    private void validateItems() {
+    private void validateItems(char context) {
         for (MarketItem item : items) {
             if(item.name().isEmpty()) {
                 throw new ListInvalidException(HttpStatus.BAD_REQUEST, " item name empty");
@@ -123,13 +117,26 @@ public class MarketList {
                 throw new ListInvalidException(HttpStatus.BAD_REQUEST, " negative item price");
             }
 
-            if(item.quantity() > 0 && item.price() <= 0) {
-                throw new ListInvalidException(HttpStatus.BAD_REQUEST, " invalid or negative item price");
+            if(Character.toUpperCase(context) != 'F') {
+                break;
             }
 
-            if(item.quantity() == 0 && item.price() != 0) {
+            if(item.quantity() == 0) {
+                throw new ListInvalidException(HttpStatus.BAD_REQUEST, " invalid item quantity");
+            }
+
+            if(item.price() == 0) {
                 throw new ListInvalidException(HttpStatus.BAD_REQUEST, " invalid item price");
             }
+        }
+    }
+
+    public void validateList(char context) {
+        partialValidateList(context);
+        verifyFinished();
+
+        if (totalValue < 0) {
+            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " negative list total value");
         }
     }
 
@@ -140,7 +147,8 @@ public class MarketList {
     }
 
     public void updateList(MarketList listToUpdate) {
-        listToUpdate.validateList();
+        char context = 'U';
+        listToUpdate.validateList(context);
 
         if (!listToUpdate.getDescription().isEmpty()){
             description = listToUpdate.getDescription();
