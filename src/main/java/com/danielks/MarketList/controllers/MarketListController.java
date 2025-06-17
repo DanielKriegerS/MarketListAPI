@@ -103,8 +103,15 @@ public class MarketListController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<FinishedListDTO> finishList(@PathVariable UUID id) {
+    public ResponseEntity<EntityModel<FinishedListDTO>> finishList(@PathVariable UUID id) {
         FinishedListDTO finishedList = service.finishList(id);
-        return ResponseEntity.ok(finishedList);
+
+        EntityModel<FinishedListDTO> model = EntityModel.of(finishedList,
+                linkTo(methodOn(MarketListController.class).getById(id)).withSelfRel(),
+                linkTo(methodOn(MarketListController.class).getOpenLists()).withRel("Open Lists"),
+                linkTo(methodOn(MarketListController.class).getFinishedLists()).withRel("Finished Lists")
+        );
+
+        return ResponseEntity.ok(model);
     }
 }
