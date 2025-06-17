@@ -68,9 +68,20 @@ public class MarketListController {
     }
 
     @PostMapping
-    public ResponseEntity<CompleteListDTO> create(@RequestBody MarketList marketList) {
+    public ResponseEntity<EntityModel<CompleteListDTO>> create(@RequestBody MarketList marketList) {
         CompleteListDTO saved = service.create(marketList);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+
+        EntityModel<CompleteListDTO> model = EntityModel.of(saved,
+                linkTo(methodOn(MarketListController.class).getById(saved.id())).withSelfRel(),
+                linkTo(methodOn(MarketListController.class).getOpenLists()).withRel("Open Lists"),
+                linkTo(methodOn(MarketListController.class).getFinishedLists()).withRel("Finished Lists")
+        );
+
+        return ResponseEntity
+                .created(linkTo(methodOn(MarketListController.class)
+                        .getById(saved.id()))
+                        .toUri())
+                .body(model);
     }
 
     @PutMapping("/{id}")
