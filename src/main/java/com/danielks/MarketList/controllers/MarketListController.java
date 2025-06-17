@@ -85,9 +85,15 @@ public class MarketListController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CompleteListDTO> update(@PathVariable UUID id, @RequestBody MarketList updatedList) {
+    public ResponseEntity<EntityModel<CompleteListDTO>> update(@PathVariable UUID id, @RequestBody MarketList updatedList) {
         CompleteListDTO list = service.update(id, updatedList);
-        return ResponseEntity.ok(list);
+        EntityModel<CompleteListDTO> model = EntityModel.of(list,
+                linkTo(methodOn(MarketListController.class).getById(id)).withSelfRel(),
+                linkTo(methodOn(MarketListController.class).getOpenLists()).withRel("Open Lists"),
+                linkTo(methodOn(MarketListController.class).getFinishedLists()).withRel("Finished Lists")
+        );
+
+        return ResponseEntity.ok(model);
     }
 
     @DeleteMapping("/{id}")
