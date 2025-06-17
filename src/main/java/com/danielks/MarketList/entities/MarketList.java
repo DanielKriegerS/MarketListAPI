@@ -115,12 +115,20 @@ public class MarketList {
                 throw new ListInvalidException(HttpStatus.BAD_REQUEST, " item name empty");
             }
 
-            if(item.quantity() <= 0) {
+            if(item.quantity() < 0) {
                 throw new ListInvalidException(HttpStatus.BAD_REQUEST, " negative quantity");
             }
 
-            if(item.price() <= 0) {
+            if(item.price() < 0) {
                 throw new ListInvalidException(HttpStatus.BAD_REQUEST, " negative item price");
+            }
+
+            if(item.quantity() > 0 && item.price() <= 0) {
+                throw new ListInvalidException(HttpStatus.BAD_REQUEST, " invalid or negative item price");
+            }
+
+            if(item.quantity() == 0 && item.price() != 0) {
+                throw new ListInvalidException(HttpStatus.BAD_REQUEST, " invalid item price");
             }
         }
     }
