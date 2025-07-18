@@ -30,7 +30,7 @@ public class ProcessMarketListController {
         ByteArrayResource resource = importerService.generateExcel(list);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=market_list_" + id + ".xlsx")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + list.description() + ".xlsx")
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .contentLength(resource.contentLength())
                 .body(resource);
