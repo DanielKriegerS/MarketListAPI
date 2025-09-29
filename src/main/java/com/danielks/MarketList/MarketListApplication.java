@@ -7,9 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MarketListApplication {
 
 	public static void main(String[] args) {
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			System.out.println("SUTHDOWN CALLED");
-		}));
 		SpringApplication.run(MarketListApplication.class, args);
 	}
 
