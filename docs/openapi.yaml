@@ -1,0 +1,302 @@
+openapi: 3.0.0
+info:
+  title: Market List
+  description: Market List API Documentation
+  version: "1"
+servers:
+- url: https://market-list-front-ruddy.vercel.app
+- url: https://virtserver.swaggerhub.com/danielks/market-list/1
+  description: SwaggerHub API Auto Mocking
+paths:
+  /market-lists/open-lists:
+    get:
+      description: Get open lists
+      operationId: GetOpenLists
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ListSummary"
+          links:
+            selfLink:
+              operationId: getOpenListsLink
+              description: Self link
+            finishedListsLink:
+              operationId: getFinishedListsLink
+              description: Finished lists link
+  /market-lists/finished-lists:
+    get:
+      description: Get finished lists
+      operationId: GetFinishedLists
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ListSummary"
+          links:
+            selfLink:
+              operationId: getFinishedListsLink
+              description: Self link
+            openListsLink:
+              operationId: getOpenListsLink
+              description: Open lists link
+  /market-lists/{list-id}:
+    get:
+      description: Get list
+      operationId: GetList
+      parameters:
+      - name: list-id
+        in: path
+        description: Id of the list
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CompleteList"
+          links:
+            selfLink:
+              operationId: getListLink
+              description: Self link
+            openListsLink:
+              operationId: getOpenListsLink
+              description: Open lists link
+            finishedListsLink:
+              operationId: getFinishedListsLink
+              description: Finished lists link
+        "404":
+          description: List not found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorResponse"
+    put:
+      description: Update list
+      operationId: UpdateList
+      parameters:
+      - name: list-id
+        in: path
+        description: Id of the list to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: List to update
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompleteList"
+        required: true
+      responses:
+        "200":
+          description: List updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CompleteList"
+          links:
+            selfLink:
+              operationId: UpdateListLink
+              description: Self link
+            openListsLink:
+              operationId: getOpenListsLink
+              description: Open lists link
+            finishedListsLink:
+              operationId: getFinishedListsLink
+              description: Finished lists link
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: List not found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      description: Delete list
+      operationId: DeleteList
+      parameters:
+      - name: list-id
+        in: path
+        description: Id of the list to delete
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: List deleted
+        "404":
+          description: List not found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      description: Finish list
+      operationId: FinishList
+      parameters:
+      - name: list-id
+        in: path
+        description: Id of the list to finish
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: list finished
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinishedList"
+          links:
+            selfLink:
+              operationId: finishListLink
+              description: Self link
+            openListsLink:
+              operationId: getOpenListsLink
+              description: Open lists link
+            finishedListsLink:
+              operationId: getFinishedListsLink
+              description: Finished lists link
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: List not found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorResponse"
+  /market-lists:
+    post:
+      description: Create list
+      operationId: CreateList
+      requestBody:
+        description: List to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompleteList"
+        required: true
+      responses:
+        "201":
+          description: Created list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CompleteList"
+          links:
+            selfLink:
+              operationId: CreateListLink
+              description: Self link
+            openListsLink:
+              operationId: getOpenListsLink
+              description: Open lists link
+            finishedListsLink:
+              operationId: getFinishedListsLink
+              description: Finished lists link
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    ListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        date:
+          type: string
+        desc:
+          type: string
+        totalValue:
+          type: number
+          format: float
+      description: Summary of list
+    CompleteList:
+      type: object
+      properties:
+        id:
+          type: string
+        date:
+          type: string
+        desc:
+          type: string
+        totalValue:
+          type: number
+          format: float
+        listitems:
+          type: array
+          description: array of list items
+          items:
+            $ref: "#/components/schemas/ListItem"
+      description: Complete list
+    FinishedList:
+      type: object
+      properties:
+        finished:
+          type: string
+      description: List finished response
+    ListItem:
+      type: object
+      properties:
+        name:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+          format: float
+      description: An item of the list
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+      description: Default error response
