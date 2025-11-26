@@ -1,7 +1,7 @@
 package com.danielks.MarketList.security.config;
 
 import com.danielks.MarketList.security.filters.JwtAuthenticationFilter;
-import com.danielks.MarketList.security.services.UserService;
+import com.danielks.MarketList.security.services.CustomUserDetailsService;
 import com.danielks.MarketList.security.utils.JwtUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,13 +23,13 @@ public class SecurityConfig {
 
     private final JwtUtils jwtUtils;
     private final JwtAuthenticationFilter jwtFilter;
-    private final UserService userService;
+    private final CustomUserDetailsService customUserDetailsService;
     private final CorsConfigurationSource corsConfigurationSource;
 
-    public SecurityConfig(JwtUtils jwtUtils, JwtAuthenticationFilter jwtFilter, UserService userService, CorsConfigurationSource corsConfigurationSource) {
+    public SecurityConfig(JwtUtils jwtUtils, JwtAuthenticationFilter jwtFilter, CustomUserDetailsService customUserDetailsService, CorsConfigurationSource corsConfigurationSource) {
         this.jwtUtils = jwtUtils;
         this.jwtFilter = jwtFilter;
-        this.userService = userService;
+        this.customUserDetailsService = customUserDetailsService;
         this.corsConfigurationSource = corsConfigurationSource;
     }
 
