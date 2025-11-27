@@ -4,10 +4,12 @@ import com.danielks.MarketList.entities.MarketList;
 import com.danielks.MarketList.entities.dtos.CompleteListDTO;
 import com.danielks.MarketList.entities.dtos.FinishedListDTO;
 import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
+import com.danielks.MarketList.security.entities.CustomUserDetails;
 import com.danielks.MarketList.services.MarketListService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -66,8 +68,8 @@ public class MarketListController {
     }
 
     @PostMapping
-    public ResponseEntity<EntityModel<CompleteListDTO>> create(@RequestBody MarketList marketList) {
-        CompleteListDTO saved = service.create(marketList);
+    public ResponseEntity<EntityModel<CompleteListDTO>> create(@RequestBody MarketList marketList, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        CompleteListDTO saved = service.create(marketList, userDetails.getId());
 
         EntityModel<CompleteListDTO> model = EntityModel.of(saved,
                 linkTo(methodOn(MarketListController.class).getById(saved.id())).withSelfRel(),
