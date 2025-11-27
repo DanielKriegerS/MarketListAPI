@@ -104,7 +104,7 @@ public class MarketListController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<EntityModel<FinishedListDTO>> finishList(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        FinishedListDTO finishedList = service.finishList(id);
+        FinishedListDTO finishedList = service.finishList(id, userDetails.getId());
 
         EntityModel<FinishedListDTO> model = EntityModel.of(finishedList,
                 linkTo(methodOn(MarketListController.class).getById(id, userDetails)).withSelfRel(),
