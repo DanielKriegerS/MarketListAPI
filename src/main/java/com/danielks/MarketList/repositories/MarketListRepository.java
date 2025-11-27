@@ -9,7 +9,8 @@ import java.util.UUID;
 
 @Repository
 public interface MarketListRepository extends JpaRepository<MarketList, UUID> {
-        List<MarketList> findByFinishedTrue();
+        List<MarketList> findByOwnerIdAndFinishedTrue(UUID ownerId);
 
-        List<MarketList> findByFinishedFalse();
+        List<MarketList> findByOwnerIdAndFinishedFalse(UUID ownerId);
+
 }
