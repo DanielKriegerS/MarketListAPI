@@ -105,7 +105,6 @@ public class MarketList {
         char context = 'C';
         partialValidateList(context);
         setDate(LocalDateTime.now());
-        setTotalValue(0.0f);
     }
     public void partialValidateList(char context) {
         validateDescription();
@@ -118,6 +117,9 @@ public class MarketList {
                 throw new ListInvalidException(HttpStatus.BAD_REQUEST, " item name empty");
             }
 
+            if (Character.toUpperCase(context) == 'C'){
+                validateItemToCreate(item);
+            }
             if(item.quantity() < 0) {
                 throw new ListInvalidException(HttpStatus.BAD_REQUEST, " negative quantity");
             }
@@ -138,19 +140,64 @@ public class MarketList {
                 throw new ListInvalidException(HttpStatus.BAD_REQUEST, " invalid item price");
             }
         }
+
+        validateTotalValue(context);
+    }
+
+    private void validateItemToCreate(MarketItem item) {
+        if (item.quantity() != 0) {
+            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " invalid item quantity");
+        }
+
+        if (item.price() != 0) {
+            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " invalid item price");
+        }
     }
 
     public void validateList(char context) {
         partialValidateList(context);
         verifyFinished();
+    }
+
+    private void validateTotalValue(char context) {
+        if (totalValue == null && Character.toUpperCase(context) != 'C') {
+            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " total value missing");
+        }
+
+        if (totalValue == null) {
+            setTotalValue(0.0f);
+        }
 
         if (totalValue < 0) {
             throw new ListInvalidException(HttpStatus.BAD_REQUEST, " negative list total value");
         }
+
+        if (totalValue == 0 && Character.toUpperCase(context) == 'F') {
+            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " invalid list total value");
+        }
+
+        float effectiveTotal = calculateTotalValue();
+
+        if (effectiveTotal != totalValue) {
+            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " total value mismatch");
+        }
+    }
+
+    private float calculateTotalValue() {
+        float calculatedTotal = 0.0f;
+        for (MarketItem item : items) {
+            calculatedTotal += (float) (item.price() * item.quantity());
+        }
+
+        return calculatedTotal;
     }
 
     private void validateDescription() {
-        if (description.trim().isEmpty()){
+        if (description == null) {
+            throw new ListInvalidException(HttpStatus.BAD_REQUEST, " description missing");
+        }
+
+        if (description.trim().isEmpty() || description.isBlank()){
             throw new ListInvalidException(HttpStatus.BAD_REQUEST, " description invalid");
         }
     }
