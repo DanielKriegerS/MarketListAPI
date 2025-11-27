@@ -7,6 +7,8 @@ import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
 import com.danielks.MarketList.entities.mappers.MarketListMapper;
 import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
 import com.danielks.MarketList.repositories.MarketListRepository;
+import com.danielks.MarketList.repositories.UserRepository;
+import com.danielks.MarketList.security.entities.User;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,11 +19,13 @@ import java.util.UUID;
 @Service
 public class MarketListService {
     private final MarketListRepository repository;
+    private final UserRepository userRepository;
     private final MarketListMapper mapper;
 
-    public MarketListService(MarketListRepository repository, MarketListMapper mapper) {
+    public MarketListService(MarketListRepository repository, MarketListMapper mapper, UserRepository userRepository) {
         this.repository = repository;
         this.mapper = mapper;
+        this.userRepository = userRepository;
     }
 
     public CompleteListDTO getById(UUID id)  {
@@ -43,8 +47,13 @@ public class MarketListService {
         return mapper.toSummaryList(finishedLists);
     }
 
-    public CompleteListDTO create(MarketList marketList) {
+    public CompleteListDTO create(MarketList marketList, UUID userId) {
+        User owner = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         marketList.verifyToCreate();
+        marketList.linkToUser(owner);
+        System.out.println(marketList);
         repository.save(marketList);
         return mapper.toDTO(marketList);
     }
