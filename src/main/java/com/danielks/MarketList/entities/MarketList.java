@@ -104,6 +104,8 @@ public class MarketList {
     public void verifyToCreate() {
         char context = 'C';
         partialValidateList(context);
+        setDate(LocalDateTime.now());
+        setTotalValue(0.0f);
     }
     public void partialValidateList(char context) {
         validateDescription();
