@@ -71,7 +71,8 @@ public class MarketListService {
         return mapper.toDTO(list);
     }
 
-    public void delete(UUID id) {
+    public void delete(UUID id, UUID ownerId) {
+        userService.getUserById(ownerId);
         validateListId(id);
         repository.deleteById(id);
     }
