@@ -63,8 +63,7 @@ public class MarketListService {
     }
 
     public CompleteListDTO update(UUID id, MarketList updatedList, UUID ownerId) {
-        userService.getUserById(ownerId);
-        MarketList list = validateListId(id);
+        MarketList list = validateListIdAndOwnerId(id, ownerId);
 
         list.updateList(updatedList);
         repository.save(list);
@@ -72,20 +71,20 @@ public class MarketListService {
     }
 
     public void delete(UUID id, UUID ownerId) {
-        userService.getUserById(ownerId);
-        validateListId(id);
+        validateListIdAndOwnerId(id, ownerId);
         repository.deleteById(id);
     }
 
-    public FinishedListDTO finishList(UUID id) {
-        MarketList list = validateListId(id);
+    public FinishedListDTO finishList(UUID id, UUID ownerId) {
+        MarketList list = validateListIdAndOwnerId(id, ownerId);
 
         list.finish();
         repository.save(list);
         return new FinishedListDTO("OK");
     }
 
-    private MarketList validateListId(UUID id) {
+    private MarketList validateListIdAndOwnerId(UUID id, UUID ownerId) {
+        userService.getUserById(ownerId);
         return repository.findById(id)
                 .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
                         "id: " + id + " not found"));
