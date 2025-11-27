@@ -97,8 +97,8 @@ public class MarketListController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        service.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        service.delete(id, userDetails.getId());
         return ResponseEntity.noContent().build();
     }
 
