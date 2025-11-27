@@ -36,14 +36,14 @@ public class MarketListService {
     }
 
     @Transactional
-    public List<ListSummaryDTO> getOpenLists() {
-        List<MarketList> openLists = repository.findByFinishedFalse();
+    public List<ListSummaryDTO> getOpenLists(UUID ownerId) {
+        List<MarketList> openLists = repository.findByOwnerIdAndFinishedFalse(ownerId);
         return mapper.toSummaryList(openLists);
     }
 
     @Transactional
-    public List<ListSummaryDTO> getFinishedLists() {
-        List<MarketList> finishedLists = repository.findByFinishedTrue();
+    public List<ListSummaryDTO> getFinishedLists(UUID ownerId) {
+        List<MarketList> finishedLists = repository.findByOwnerIdAndFinishedTrue(ownerId);
         return mapper.toSummaryList(finishedLists);
     }
 
@@ -53,7 +53,6 @@ public class MarketListService {
 
         marketList.verifyToCreate();
         marketList.linkToUser(owner);
-        System.out.println(marketList);
         repository.save(marketList);
         return mapper.toDTO(marketList);
     }
