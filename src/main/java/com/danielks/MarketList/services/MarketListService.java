@@ -7,7 +7,6 @@ import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
 import com.danielks.MarketList.entities.mappers.MarketListMapper;
 import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
 import com.danielks.MarketList.repositories.MarketListRepository;
-import com.danielks.MarketList.repositories.UserRepository;
 import com.danielks.MarketList.security.entities.User;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
@@ -19,13 +18,13 @@ import java.util.UUID;
 @Service
 public class MarketListService {
     private final MarketListRepository repository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final MarketListMapper mapper;
 
-    public MarketListService(MarketListRepository repository, MarketListMapper mapper, UserRepository userRepository) {
+    public MarketListService(MarketListRepository repository, MarketListMapper mapper, UserService userService) {
         this.repository = repository;
         this.mapper = mapper;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public CompleteListDTO getById(UUID id)  {
@@ -37,19 +36,20 @@ public class MarketListService {
 
     @Transactional
     public List<ListSummaryDTO> getOpenLists(UUID ownerId) {
+        userService.getUserById(ownerId);
         List<MarketList> openLists = repository.findByOwnerIdAndFinishedFalse(ownerId);
         return mapper.toSummaryList(openLists);
     }
 
     @Transactional
     public List<ListSummaryDTO> getFinishedLists(UUID ownerId) {
+        userService.getUserById(ownerId);
         List<MarketList> finishedLists = repository.findByOwnerIdAndFinishedTrue(ownerId);
         return mapper.toSummaryList(finishedLists);
     }
 
-    public CompleteListDTO create(MarketList marketList, UUID userId) {
-        User owner = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public CompleteListDTO create(MarketList marketList, UUID ownerId) {
+        User owner = userService.getUserById(ownerId);
 
         marketList.verifyToCreate();
         marketList.linkToUser(owner);
@@ -57,10 +57,9 @@ public class MarketListService {
         return mapper.toDTO(marketList);
     }
 
-    public CompleteListDTO update(UUID id, MarketList updatedList) {
-        MarketList list = repository.findById(id)
-                    .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
-                                                                            "id: " + id + " not found"));
+    public CompleteListDTO update(UUID id, MarketList updatedList, UUID ownerId) {
+        userService.getUserById(ownerId);
+        MarketList list = validateListId(id);
 
         list.updateList(updatedList);
         repository.save(list);
@@ -68,20 +67,21 @@ public class MarketListService {
     }
 
     public void delete(UUID id) {
-         repository.findById(id).
-                 orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
-                                                                                "id: " + id + " not found"));
-         repository.deleteById(id);
+        validateListId(id);
+        repository.deleteById(id);
     }
 
     public FinishedListDTO finishList(UUID id) {
-        MarketList list = repository.findById(id)
-                .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
-                                                                                "id: " + id + " not found"));
+        MarketList list = validateListId(id);
 
         list.finish();
         repository.save(list);
         return new FinishedListDTO("OK");
     }
 
+    private MarketList validateListId(UUID id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
+                        "id: " + id + " not found"));
+    }
 }
