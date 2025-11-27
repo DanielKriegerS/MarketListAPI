@@ -4,7 +4,9 @@ import com.danielks.MarketList.entities.MarketList;
 import com.danielks.MarketList.entities.dtos.CompleteListDTO;
 import com.danielks.MarketList.entities.dtos.FinishedListDTO;
 import com.danielks.MarketList.entities.dtos.ListSummaryDTO;
+import com.danielks.MarketList.entities.dtos.UserResponseDTO;
 import com.danielks.MarketList.entities.mappers.MarketListMapper;
+import com.danielks.MarketList.entities.mappers.UserResponseMapper;
 import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
 import com.danielks.MarketList.repositories.MarketListRepository;
 import com.danielks.MarketList.security.entities.User;
@@ -18,13 +20,15 @@ import java.util.UUID;
 @Service
 public class MarketListService {
     private final MarketListRepository repository;
-    private final UserService userService;
     private final MarketListMapper mapper;
+    private final UserService userService;
+    private final UserResponseMapper userMapper;
 
-    public MarketListService(MarketListRepository repository, MarketListMapper mapper, UserService userService) {
+    public MarketListService(MarketListRepository repository, MarketListMapper mapper, UserService userService, UserResponseMapper userMapper) {
         this.repository = repository;
         this.mapper = mapper;
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     public CompleteListDTO getById(UUID id)  {
@@ -49,8 +53,9 @@ public class MarketListService {
     }
 
     public CompleteListDTO create(MarketList marketList, UUID ownerId) {
-        User owner = userService.getUserById(ownerId);
+        UserResponseDTO ownerDTO = userService.getUserById(ownerId);
 
+        User owner = userMapper.toEntity(ownerDTO);
         marketList.verifyToCreate();
         marketList.linkToUser(owner);
         repository.save(marketList);
