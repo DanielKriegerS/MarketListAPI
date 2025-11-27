@@ -17,6 +17,7 @@ public interface MarketListMapper {
     @Mapping(source = "date", target = "date")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "totalValue", target = "totalValue")
+    @Mapping(source = "owner", target = "ownerId")
     CompleteListDTO toDTO(MarketList list);
 
     @Mapping(source = "id", target = "id")
@@ -31,6 +32,7 @@ public interface MarketListMapper {
     @Mapping(source = "date", target = "date")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "totalValue", target = "totalValue")
+    @Mapping(source = "owner", target = "ownerId")
     ListSummaryDTO toSummary(MarketList list);
 
     @Named("itemsCount")
