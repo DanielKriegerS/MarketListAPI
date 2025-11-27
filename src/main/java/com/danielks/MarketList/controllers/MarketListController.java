@@ -86,7 +86,7 @@ public class MarketListController {
 
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<CompleteListDTO>> update(@PathVariable UUID id, @RequestBody MarketList updatedList, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        CompleteListDTO list = service.update(id, updatedList);
+        CompleteListDTO list = service.update(id, updatedList, userDetails.getId());
         EntityModel<CompleteListDTO> model = EntityModel.of(list,
                 linkTo(methodOn(MarketListController.class).getById(id, userDetails)).withSelfRel(),
                 linkTo(methodOn(MarketListController.class).getOpenLists(userDetails)).withRel("Open Lists"),
