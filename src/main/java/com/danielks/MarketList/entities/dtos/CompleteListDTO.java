@@ -11,4 +11,5 @@ public record CompleteListDTO(UUID id,
                               String description,
                               Float totalValue,
                               ArrayList<MarketItem> items ,
+                              UUID ownerId,
                               boolean finished) {}

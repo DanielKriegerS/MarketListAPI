@@ -8,5 +8,6 @@ public record ListSummaryDTO(UUID id,
                              String description,
                              Float totalValue,
                              int totalItems ,
+                             UUID ownerId,
                              boolean isFinished) {
 }
