@@ -2,6 +2,7 @@ package com.danielks.MarketList.entities;
 
 import com.danielks.MarketList.exceptions.market_list.ListFinishedException;
 import com.danielks.MarketList.exceptions.market_list.ListInvalidException;
+import com.danielks.MarketList.security.entities.User;
 import com.danielks.MarketList.utils.MarketItemConverter;
 import jakarta.persistence.*;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,10 @@ public class MarketList {
     @Column(columnDefinition = "TEXT")
     @Convert(converter = MarketItemConverter.class)
     private List<MarketItem> items;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     private LocalDateTime date;
 
@@ -66,6 +71,8 @@ public class MarketList {
     public Float getTotalValue() {
         return totalValue;
     }
+
+    public UUID getOwner() { return owner.getId(); }
 
     public boolean isFinished() {
         return finished;
@@ -168,5 +175,23 @@ public class MarketList {
             throw new ListFinishedException(HttpStatus.BAD_REQUEST,
                                                         "the required list is finished!");
         }
+    }
+
+    public void linkToUser(User owner) {
+        System.out.println("Linking list to user: " + owner);
+        this.owner = owner;
+    }
+
+    @Override
+    public String toString() {
+        return "MarketList{" +
+                "id=" + id +
+                ", items=" + items +
+                ", ownerId=" + owner.getId() +
+                ", date=" + date +
+                ", description='" + description + '\'' +
+                ", totalValue=" + totalValue +
+                ", finished=" + finished +
+                '}';
     }
 }
