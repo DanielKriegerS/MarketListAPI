@@ -178,7 +178,6 @@ public class MarketList {
     }
 
     public void linkToUser(User owner) {
-        System.out.println("Linking list to user: " + owner);
         this.owner = owner;
     }
 
