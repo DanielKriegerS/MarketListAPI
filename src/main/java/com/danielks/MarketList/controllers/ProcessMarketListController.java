@@ -5,6 +5,7 @@ import com.danielks.MarketList.services.MarketListImportService;
 import com.danielks.MarketList.services.MarketListService;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +26,8 @@ public class ProcessMarketListController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ByteArrayResource> downloadMarketList(@PathVariable UUID id) throws IOException {
-        CompleteListDTO list = marketListService.getById(id);
+    public ResponseEntity<ByteArrayResource> downloadMarketList(@PathVariable UUID id, @AuthenticationPrincipal UUID ownerId) throws IOException {
+        CompleteListDTO list = marketListService.getById(id, ownerId);
         ByteArrayResource resource = importerService.generateExcel(list);
 
         return ResponseEntity.ok()
