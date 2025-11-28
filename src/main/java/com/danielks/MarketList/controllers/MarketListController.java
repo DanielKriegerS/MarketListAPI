@@ -57,7 +57,7 @@ public class MarketListController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<CompleteListDTO>> getById(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        CompleteListDTO list = service.getById(id);
+        CompleteListDTO list = service.getById(id, userDetails.getId());
 
         EntityModel<CompleteListDTO> model = EntityModel.of(list,
                 linkTo(methodOn(MarketListController.class).getById(id, userDetails)).withSelfRel(),

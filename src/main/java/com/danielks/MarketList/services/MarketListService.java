@@ -31,10 +31,8 @@ public class MarketListService {
         this.userMapper = userMapper;
     }
 
-    public CompleteListDTO getById(UUID id)  {
-        MarketList list = repository.findById(id)
-                    .orElseThrow(() -> new ListNotFoundException(HttpStatus.NOT_FOUND,
-                                                                            "id: " + id + " not found"));
+    public CompleteListDTO getById(UUID id, UUID ownerId)  {
+        MarketList list = validateListIdAndOwnerId(id, ownerId);
         return mapper.toDTO(list);
     }
 
