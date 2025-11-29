@@ -41,6 +41,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public void createUser(String username, String rawPassword) {
+        if(userAuthRepository.findByUsername(username).isPresent()){
+            throw new RuntimeException("User already exists");
+        }
+
         User u = new User();
         u.setUsername(username);
         u.setPassword(pw.encode(rawPassword));
