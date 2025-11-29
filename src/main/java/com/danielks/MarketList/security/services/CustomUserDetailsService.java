@@ -2,6 +2,7 @@ package com.danielks.MarketList.security.services;
 
 import com.danielks.MarketList.exceptions.auth.UserAlreadyExistsException;
 import com.danielks.MarketList.security.entities.CustomUserDetails;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     public void createUser(String username, String rawPassword) {
         if(userAuthRepository.findByUsername(username).isPresent()){
-            throw new UserAlreadyExistsException(username);
+            throw new UserAlreadyExistsException(HttpStatus.CONFLICT,
+                    "User with username " + username + " already exists.");
         }
 
         User u = new User();
