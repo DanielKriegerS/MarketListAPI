@@ -3,19 +3,21 @@ package com.danielks.MarketList.exceptions.handlers;
 import com.danielks.MarketList.controllers.MarketListController;
 import com.danielks.MarketList.entities.ErrorResponse;
 import com.danielks.MarketList.entities.mappers.ErrorResponseMapper;
+import com.danielks.MarketList.exceptions.auth.UserAlreadyExistsException;
 import com.danielks.MarketList.exceptions.market_list.ListFinishedException;
 import com.danielks.MarketList.exceptions.market_list.ListInvalidException;
 import com.danielks.MarketList.exceptions.market_list.ListNotFoundException;
+import com.danielks.MarketList.security.controllers.AuthController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice(assignableTypes = {MarketListController.class})
-public class ListExceptionHandler {
+@ControllerAdvice(assignableTypes = {MarketListController.class, AuthController.class})
+public class GlobalExceptionHandler {
     private final ErrorResponseMapper errorResponseMapper;
 
-    public ListExceptionHandler(ErrorResponseMapper errorResponseMapper) {
+    public GlobalExceptionHandler(ErrorResponseMapper errorResponseMapper) {
         this.errorResponseMapper = errorResponseMapper;
     }
 
@@ -35,5 +37,11 @@ public class ListExceptionHandler {
     public ResponseEntity<ErrorResponse> handleListFinished(ListFinishedException ex) {
         ErrorResponse error = errorResponseMapper.toErrorResponse(HttpStatus.BAD_REQUEST, ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException ex) {
+        ErrorResponse error = errorResponseMapper.toErrorResponse(HttpStatus.CONFLICT, ex);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 }
