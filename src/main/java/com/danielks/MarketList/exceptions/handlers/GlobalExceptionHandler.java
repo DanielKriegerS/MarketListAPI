@@ -3,6 +3,7 @@ package com.danielks.MarketList.exceptions.handlers;
 import com.danielks.MarketList.controllers.MarketListController;
 import com.danielks.MarketList.entities.ErrorResponse;
 import com.danielks.MarketList.entities.mappers.ErrorResponseMapper;
+import com.danielks.MarketList.exceptions.auth.LoginUsernameNotFoundException;
 import com.danielks.MarketList.exceptions.auth.UserAlreadyExistsException;
 import com.danielks.MarketList.exceptions.market_list.ListFinishedException;
 import com.danielks.MarketList.exceptions.market_list.ListInvalidException;
@@ -43,5 +44,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException ex) {
         ErrorResponse error = errorResponseMapper.toErrorResponse(HttpStatus.CONFLICT, ex);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(LoginUsernameNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleLoginUsernameNotFound(LoginUsernameNotFoundException ex) {
+        ErrorResponse error = errorResponseMapper.toErrorResponse(HttpStatus.NOT_FOUND, ex);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }
