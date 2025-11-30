@@ -1,5 +1,6 @@
 package com.danielks.MarketList.security.services;
 
+import com.danielks.MarketList.exceptions.auth.LoginUsernameNotFoundException;
 import com.danielks.MarketList.exceptions.auth.UserAlreadyExistsException;
 import com.danielks.MarketList.security.entities.CustomUserDetails;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User u = userAuthRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User.java not found"));
+                .orElseThrow(() -> new LoginUsernameNotFoundException(username));
         return new CustomUserDetails(u);
     }
 
