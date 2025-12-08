@@ -34,7 +34,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<EntityModel<Map<String, String>>> register(@RequestBody AuthRequest body) {
-        customUserDetailsService.createUser(body.username(), body.password());
+        customUserDetailsService.createUser(body);
 
         var selfLink = linkTo(methodOn(AuthController.class).register(body)).withSelfRel();
         var loginLink = linkTo(methodOn(AuthController.class).login(body)).withRel("login");
