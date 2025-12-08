@@ -3,6 +3,8 @@ package com.danielks.MarketList.exceptions.handlers;
 import com.danielks.MarketList.controllers.MarketListController;
 import com.danielks.MarketList.entities.ErrorResponse;
 import com.danielks.MarketList.entities.mappers.ErrorResponseMapper;
+import com.danielks.MarketList.exceptions.auth.InvalidUserLoginException;
+import com.danielks.MarketList.exceptions.auth.InvalidUserPasswordException;
 import com.danielks.MarketList.exceptions.auth.LoginUsernameNotFoundException;
 import com.danielks.MarketList.exceptions.auth.UserAlreadyExistsException;
 import com.danielks.MarketList.exceptions.market_list.ListFinishedException;
@@ -50,5 +52,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleLoginUsernameNotFound(LoginUsernameNotFoundException ex) {
         ErrorResponse error = errorResponseMapper.toErrorResponse(HttpStatus.NOT_FOUND, ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(InvalidUserLoginException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidUserLogin(InvalidUserLoginException ex) {
+        ErrorResponse error = errorResponseMapper.toErrorResponse(HttpStatus.UNAUTHORIZED, ex);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(InvalidUserPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidUserPassword(InvalidUserPasswordException ex) {
+        ErrorResponse error = errorResponseMapper.toErrorResponse(HttpStatus.UNAUTHORIZED, ex);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }
