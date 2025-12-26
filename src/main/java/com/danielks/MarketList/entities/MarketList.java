@@ -78,12 +78,6 @@ public class MarketList {
         return finished;
     }
 
-    public void finish() {
-        char context = 'F';
-        validateList(context);
-        this.finished = true;
-    }
-
     public void setId(UUID id) {
         this.id = id;
     }
@@ -100,12 +94,19 @@ public class MarketList {
         this.totalValue = totalValue;
     }
 
+    public void finish() {
+        char context = 'F';
+        validateList(context);
+        this.finished = true;
+    }
+
     // context 'C' = create; 'U'= update; 'F' finish
     public void verifyToCreate() {
         char context = 'C';
         partialValidateList(context);
         setDate(LocalDateTime.now());
     }
+
     public void partialValidateList(char context) {
         validateDescription();
         validateItems(context);
@@ -120,6 +121,7 @@ public class MarketList {
             if (Character.toUpperCase(context) == 'C'){
                 validateItemToCreate(item);
             }
+
             if(item.quantity() < 0) {
                 throw new ListInvalidException(HttpStatus.BAD_REQUEST, " negative quantity");
             }
